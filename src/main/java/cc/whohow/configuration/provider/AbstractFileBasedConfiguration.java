@@ -21,7 +21,7 @@ public abstract class AbstractFileBasedConfiguration<T> implements Configuration
     }
 
     @Override
-    public void accept(ConfigurationSource s) {
+    public synchronized void accept(ConfigurationSource source) {
         try {
             T oldValue = value;
             T newValue = parse();
@@ -49,7 +49,18 @@ public abstract class AbstractFileBasedConfiguration<T> implements Configuration
 
     @Override
     public T get() {
-        return value;
+        try {
+            if (value == null) {
+                synchronized (this) {
+                    if (value == null) {
+                        value = parse();
+                    }
+                }
+            }
+            return value;
+        } catch (Exception e) {
+            throw new ConfigurationException(e);
+        }
     }
 
     public abstract T parse() throws Exception;

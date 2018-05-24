@@ -20,10 +20,7 @@ public class VfsConfigurationManager implements FileBasedConfigurationManager, F
     }
 
     public void fileCreated(FileChangeEvent event) throws Exception {
-        FileObject fileObject = event.getFile();
-        if (fileObject.isFile()) {
-            get(fileObject).reload();
-        }
+        reload(event.getFile());
     }
 
     public void fileDeleted(FileChangeEvent event) throws Exception {
@@ -31,7 +28,10 @@ public class VfsConfigurationManager implements FileBasedConfigurationManager, F
     }
 
     public void fileChanged(FileChangeEvent event) throws Exception {
-        FileObject fileObject = event.getFile();
+        reload(event.getFile());
+    }
+
+    protected void reload(FileObject fileObject) throws Exception {
         if (fileObject.isFile()) {
             get(fileObject).reload();
         }
@@ -39,6 +39,9 @@ public class VfsConfigurationManager implements FileBasedConfigurationManager, F
 
     @Override
     public VfsConfigurationSource get(String key) {
+        if (key.startsWith("/") || key.endsWith("/")) {
+            throw new IllegalArgumentException();
+        }
         try {
             return get(file.resolveFile(key, NameScope.DESCENDENT));
         } catch (FileSystemException e) {
@@ -47,11 +50,11 @@ public class VfsConfigurationManager implements FileBasedConfigurationManager, F
     }
 
     public VfsConfigurationSource get(FileObject file) {
-        return configurationSources.computeIfAbsent(file, fileObject -> {
-            VfsConfigurationSource vfsConfigurationSource = new VfsConfigurationSource(fileObject);
-            vfsConfigurationSource.reload();
-            return vfsConfigurationSource;
-        });
+        return configurationSources.computeIfAbsent(file, this::newConfigurationSource);
+    }
+
+    private VfsConfigurationSource newConfigurationSource(FileObject file) {
+        return new VfsConfigurationSource(file);
     }
 
     @Override

@@ -11,7 +11,6 @@ public class XmlConfiguration extends AbstractFileBasedConfiguration<Document> {
 
     public XmlConfiguration(FileBasedConfigurationSource configurationSource) {
         super(configurationSource);
-        this.accept(configurationSource);
     }
 
     @Override

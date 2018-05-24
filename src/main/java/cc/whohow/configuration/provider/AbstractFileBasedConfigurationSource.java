@@ -51,12 +51,27 @@ public abstract class AbstractFileBasedConfigurationSource implements FileBasedC
 
     @Override
     public ByteBuffer getBytes() {
-        return ByteBuffer.wrap(source).asReadOnlyBuffer();
+        return ByteBuffer.wrap(getOrLoadBytes()).asReadOnlyBuffer();
     }
 
     @Override
     public InputStream getInputStream() {
-        return new ByteArrayInputStream(source);
+        return new ByteArrayInputStream(getOrLoadBytes());
+    }
+
+    protected byte[] getOrLoadBytes() {
+        try {
+            if (source == null) {
+                synchronized (this) {
+                    if (source == null) {
+                        source = load();
+                    }
+                }
+            }
+            return source;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public abstract byte[] load() throws IOException;

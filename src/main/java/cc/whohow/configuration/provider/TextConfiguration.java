@@ -15,7 +15,6 @@ public class TextConfiguration extends AbstractFileBasedConfiguration<String> {
     public TextConfiguration(FileBasedConfigurationSource configurationSource, Charset charset) {
         super(configurationSource);
         this.charset = charset;
-        this.accept(configurationSource);
     }
 
     @Override

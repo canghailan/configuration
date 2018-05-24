@@ -14,7 +14,8 @@ public class TestConfiguration {
         FileObject fileObject = VFS.getManager().resolveFile(new File("."), ".");
         FileBasedConfigurationManager configurationManager = new VfsConfigurationManager(fileObject);
 
-        TextConfiguration configuration = new TextConfiguration(configurationManager.get("pom.xml"));
-        System.out.println(configuration);
+        try (TextConfiguration configuration = new TextConfiguration(configurationManager.get("pom.xml"))) {
+            System.out.println(configuration.get());
+        }
     }
 }

@@ -8,7 +8,6 @@ import java.util.Properties;
 public class PropertiesConfiguration extends AbstractFileBasedConfiguration<Properties> {
     public PropertiesConfiguration(FileBasedConfigurationSource configurationSource) {
         super(configurationSource);
-        this.accept(configurationSource);
     }
 
     @Override

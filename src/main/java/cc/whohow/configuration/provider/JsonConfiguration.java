@@ -18,7 +18,6 @@ public class JsonConfiguration extends AbstractFileBasedConfiguration<JsonNode> 
     public JsonConfiguration(FileBasedConfigurationSource configurationSource, ObjectMapper objectMapper) {
         super(configurationSource);
         this.objectMapper = objectMapper;
-        this.accept(configurationSource);
     }
 
     @Override
