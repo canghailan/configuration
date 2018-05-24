@@ -1,29 +1,30 @@
 package cc.whohow.configuration.provider;
 
 import cc.whohow.configuration.FileBasedConfigurationSource;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.InputStream;
 
-public class JsonConfiguration extends AbstractFileBasedConfiguration<JsonNode> {
+public class JsonConfiguration<T> extends AbstractFileBasedConfiguration<T> {
     private static final ObjectMapper DEFAULT_OBJECT_MAPPER = new ObjectMapper();
 
     private final ObjectMapper objectMapper;
+    private final Class<T> type;
 
-    public JsonConfiguration(FileBasedConfigurationSource configurationSource) {
-        this(configurationSource, DEFAULT_OBJECT_MAPPER);
+    public JsonConfiguration(FileBasedConfigurationSource configurationSource, Class<T> type) {
+        this(configurationSource, type, DEFAULT_OBJECT_MAPPER);
     }
 
-    public JsonConfiguration(FileBasedConfigurationSource configurationSource, ObjectMapper objectMapper) {
+    public JsonConfiguration(FileBasedConfigurationSource configurationSource, Class<T> type, ObjectMapper objectMapper) {
         super(configurationSource);
         this.objectMapper = objectMapper;
+        this.type = type;
     }
 
     @Override
-    public JsonNode parse() throws Exception {
+    public T parse() throws Exception {
         try (InputStream stream = configurationSource.getInputStream()) {
-            return objectMapper.readTree(stream);
+            return objectMapper.readValue(stream, type);
         }
     }
 }
