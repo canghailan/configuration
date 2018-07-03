@@ -51,7 +51,7 @@ public abstract class AbstractFileBasedConfigurationSource implements FileBasedC
 
     @Override
     public ByteBuffer getBytes() {
-        return ByteBuffer.wrap(getOrLoadBytes()).asReadOnlyBuffer();
+        return ByteBuffer.wrap(getOrLoadBytes());
     }
 
     @Override
