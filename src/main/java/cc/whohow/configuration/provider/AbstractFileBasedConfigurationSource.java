@@ -55,6 +55,12 @@ public abstract class AbstractFileBasedConfigurationSource implements FileBasedC
     }
 
     @Override
+    public byte[] getByteArray() {
+        byte[] source = getOrLoadBytes();
+        return Arrays.copyOf(source, source.length);
+    }
+
+    @Override
     public InputStream getInputStream() {
         return new ByteArrayInputStream(getOrLoadBytes());
     }
