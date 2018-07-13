@@ -10,19 +10,20 @@ public class FileConfiguration extends AbstractFileBasedConfiguration<byte[]> {
         super(configurationSource);
     }
 
-    public InputStream getInputStream() {
-        return configurationSource.getInputStream();
-    }
-
     public ByteBuffer getBytes() {
         return configurationSource.getBytes();
     }
 
+    public byte[] getByteArray() {
+        return configurationSource.getByteArray();
+    }
+
+    public InputStream getInputStream() {
+        return configurationSource.getInputStream();
+    }
+
     @Override
     public byte[] parse() throws Exception {
-        ByteBuffer bytes = configurationSource.getBytes();
-        byte[] copy = new byte[bytes.remaining()];
-        bytes.get(copy);
-        return copy;
+        return getByteArray();
     }
 }

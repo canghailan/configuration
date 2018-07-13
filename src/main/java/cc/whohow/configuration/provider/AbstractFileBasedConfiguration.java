@@ -42,9 +42,13 @@ public abstract class AbstractFileBasedConfiguration<T> implements Configuration
     }
 
     @Override
-    public void getAndWatch(Consumer<T> listener) {
+    public void watch(Consumer<T> listener) {
         listeners.add(listener);
-        listener.accept(get());
+    }
+
+    @Override
+    public void unwatch(Consumer<T> listener) {
+        listeners.remove(listener);
     }
 
     @Override
@@ -67,6 +71,7 @@ public abstract class AbstractFileBasedConfiguration<T> implements Configuration
 
     @Override
     public void close() {
+        listeners.clear();
         configurationSource.removeListener(this);
     }
 
