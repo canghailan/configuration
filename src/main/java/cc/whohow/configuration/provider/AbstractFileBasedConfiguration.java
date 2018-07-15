@@ -5,13 +5,12 @@ import cc.whohow.configuration.ConfigurationException;
 import cc.whohow.configuration.ConfigurationSource;
 import cc.whohow.configuration.FileBasedConfigurationSource;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-public abstract class AbstractFileBasedConfiguration<T> implements Configuration<T>, Consumer<ConfigurationSource> {
-    protected final List<Consumer<T>> listeners = new CopyOnWriteArrayList<>();
+public abstract class AbstractFileBasedConfiguration<T>
+        extends EventSupport<T>
+        implements Configuration<T>, Consumer<ConfigurationSource> {
     protected final FileBasedConfigurationSource configurationSource;
     protected volatile T value;
 
@@ -25,17 +24,12 @@ public abstract class AbstractFileBasedConfiguration<T> implements Configuration
         try {
             T oldValue = value;
             T newValue = parse();
-            value = newValue;
-
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
-            for (Consumer<T> listener : listeners) {
-                try {
-                    listener.accept(newValue);
-                } catch (Exception ignore) {
-                }
-            }
+
+            value = newValue;
+            notifyListeners(value);
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
@@ -43,12 +37,12 @@ public abstract class AbstractFileBasedConfiguration<T> implements Configuration
 
     @Override
     public void watch(Consumer<T> listener) {
-        listeners.add(listener);
+        addListener(listener);
     }
 
     @Override
     public void unwatch(Consumer<T> listener) {
-        listeners.remove(listener);
+        removeListener(listener);
     }
 
     @Override
@@ -71,7 +65,7 @@ public abstract class AbstractFileBasedConfiguration<T> implements Configuration
 
     @Override
     public void close() {
-        listeners.clear();
+        removeListeners();
         configurationSource.removeListener(this);
     }
 

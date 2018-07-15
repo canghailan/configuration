@@ -3,13 +3,12 @@ package cc.whohow.configuration.provider;
 import cc.whohow.configuration.Configuration;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ComposeConfiguration<T, R> implements Configuration<R>, Consumer<T> {
-    protected final List<Consumer<R>> listeners = new CopyOnWriteArrayList<>();
+public class ComposeConfiguration<T, R>
+        extends EventSupport<R>
+        implements Configuration<R>, Consumer<T> {
     protected final Configuration<T> configuration;
     protected final Function<T, R> function;
     protected volatile R value;
@@ -22,23 +21,23 @@ public class ComposeConfiguration<T, R> implements Configuration<R>, Consumer<T>
 
     @Override
     public void getAndWatch(Consumer<R> listener) {
-        listeners.add(listener);
+        addListener(listener);
         listener.accept(get());
     }
 
     @Override
     public void watch(Consumer<R> listener) {
-        listeners.add(listener);
+        addListener(listener);
     }
 
     @Override
     public void unwatch(Consumer<R> listener) {
-        listeners.remove(listener);
+        removeListener(listener);
     }
 
     @Override
     public void close() throws IOException {
-        listeners.clear();
+        removeListeners();
         configuration.unwatch(this);
     }
 
@@ -50,6 +49,7 @@ public class ComposeConfiguration<T, R> implements Configuration<R>, Consumer<T>
     @Override
     public void accept(T value) {
         this.value = function.apply(value);
+        notifyListeners(this.value);
     }
 
     @Override
