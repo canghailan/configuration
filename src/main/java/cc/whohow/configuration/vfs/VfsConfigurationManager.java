@@ -1,7 +1,6 @@
 package cc.whohow.configuration.vfs;
 
 import cc.whohow.configuration.ConfigurationException;
-import cc.whohow.configuration.ConfigurationManager;
 import cc.whohow.configuration.ConfigurationSource;
 import cc.whohow.configuration.FileBasedConfigurationManager;
 import org.apache.commons.vfs2.*;

@@ -1,7 +1,9 @@
 package cc.whohow.configuration.vfs;
 
 import cc.whohow.configuration.provider.AbstractFileBasedConfigurationSource;
-import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.FileContent;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

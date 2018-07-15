@@ -20,25 +20,9 @@ public class ComposeConfiguration<T, R>
     }
 
     @Override
-    public void getAndWatch(Consumer<R> listener) {
-        addListener(listener);
-        listener.accept(get());
-    }
-
-    @Override
-    public void watch(Consumer<R> listener) {
-        addListener(listener);
-    }
-
-    @Override
-    public void unwatch(Consumer<R> listener) {
-        removeListener(listener);
-    }
-
-    @Override
     public void close() throws IOException {
         removeListeners();
-        configuration.unwatch(this);
+        configuration.removeListener(this);
     }
 
     @Override

@@ -3,18 +3,17 @@ package cc.whohow.configuration;
 import cc.whohow.configuration.provider.ComposeConfiguration;
 
 import java.io.Closeable;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface Configuration<T> extends Supplier<T>, Closeable {
-    void watch(Consumer<T> listener);
+    void addListener(Consumer<T> listener);
 
-    void unwatch(Consumer<T> listener);
+    void removeListener(Consumer<T> listener);
 
     default void getAndWatch(Consumer<T> listener) {
-        watch(listener);
+        addListener(listener);
         listener.accept(get());
     }
 

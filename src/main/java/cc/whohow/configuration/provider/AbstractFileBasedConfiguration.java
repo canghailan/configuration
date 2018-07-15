@@ -24,7 +24,7 @@ public abstract class AbstractFileBasedConfiguration<T>
         try {
             T oldValue = value;
             T newValue = parse();
-            if (Objects.equals(oldValue, newValue)) {
+            if (equals(oldValue, newValue)) {
                 return;
             }
 
@@ -35,14 +35,8 @@ public abstract class AbstractFileBasedConfiguration<T>
         }
     }
 
-    @Override
-    public void watch(Consumer<T> listener) {
-        addListener(listener);
-    }
-
-    @Override
-    public void unwatch(Consumer<T> listener) {
-        removeListener(listener);
+    protected boolean equals(T oldValue, T newValue) {
+        return Objects.equals(oldValue, newValue);
     }
 
     @Override
