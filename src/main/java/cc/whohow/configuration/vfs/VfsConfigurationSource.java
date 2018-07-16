@@ -33,6 +33,7 @@ public class VfsConfigurationSource extends AbstractFileBasedConfigurationSource
 
     @Override
     public void close() throws IOException {
+        removeListeners();
         file.close();
     }
 }
